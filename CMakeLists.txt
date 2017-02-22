@@ -12,3 +12,6 @@ target_link_libraries(ocv_test ${OpenCV_LIBS})
 
 add_executable(inria_demo src/inriaHeadPose.cpp)
 target_link_libraries(inria_demo ${OpenCV_LIBS})
+
+add_executable(cmu_demo src/cmuFaces.cpp)
+target_link_libraries(cmu_demo ${OpenCV_LIBS})
