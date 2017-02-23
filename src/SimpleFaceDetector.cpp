@@ -17,6 +17,9 @@ cv::Mat SimpleFaceDetector::detectAndOverlay(const cv::Mat image) {
     cv::cvtColor(image, imageGrayscale, CV_BGR2GRAY);
     cv::equalizeHist(imageGrayscale, imageGrayscale);
 
+    int eyeX;
+    int eyeY;
+
     // Detect and iterate over faces
     faceCascade.detectMultiScale(imageGrayscale, faces, 1.1, 2);
     for (cv::Rect face : faces) {
@@ -31,10 +34,13 @@ cv::Mat SimpleFaceDetector::detectAndOverlay(const cv::Mat image) {
         // Detect and iterate over eyes
         eyesCascade.detectMultiScale(imageGrayscale(face), eyes, 1.1, 2);
         for (cv::Rect eye : eyes) {
+            eyeX = face.x + eye.x;
+            eyeY = face.y + eye.y;
+
             cv::rectangle(
                 image,
-                cv::Point(eye.x, eye.y),
-                cv::Point(eye.x + eye.width, face.y + face.height),
+                cv::Point(eyeX, eyeY),
+                cv::Point(eyeX + eye.width, eyeY + eye.height),
                 CV_RGB(0, 255, 0),
                 2
             );
