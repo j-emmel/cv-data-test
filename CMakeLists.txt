@@ -16,7 +16,13 @@ target_link_libraries(inria_demo ${OpenCV_LIBS})
 add_executable(cmu_demo src/cmuFaces.cpp src/SimpleFaceDetector.cpp src/SimpleFaceDetector.h)
 target_link_libraries(cmu_demo ${OpenCV_LIBS})
 
+add_executable(ncku_demo src/nckuSet.cpp src/SimpleFaceDetector.cpp src/SimpleFaceDetector.h)
+target_link_libraries(ncku_demo ${OpenCV_LIBS})
+
 # http://stackoverflow.com/questions/13429656
 add_custom_command(TARGET cmu_demo POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:cmu_demo>)
+add_custom_command(TARGET ncku_demo POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:ncku_demo>)

@@ -25,3 +25,10 @@ be positive or negative {0, 15, 30, 45, 60, 75, 90}.
 
 Sixteen data files have _.bad_ extensions instead of _.pgm_ and are not usable; at least twenty-eight images for each 
 person are valid.
+
+## NCKU Robotics Lab's Database
+
+* [Webpage](http://robotics.csie.ncku.edu.tw/Databases/FaceDetect_PoseEstimate.htm#Our_Database_)
+
+6660 total color face images. There are seventy-four images for each of ninety people; within a set, the pan angle 
+varies in 5&deg; increments from -90&deg;to +90&deg;.
