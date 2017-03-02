@@ -32,3 +32,9 @@ person are valid.
 
 6660 total color face images. There are seventy-four images for each of ninety people; within a set, the pan angle 
 varies in 5&deg; increments from -90&deg;to +90&deg;.
+
+## Color FERET Database
+
+* [Webpage](https://www.nist.gov/itl/iad/image-group/color-feret-database)
+
+11338 total face images of 994 subjects at up to thirteen distinct poses.
