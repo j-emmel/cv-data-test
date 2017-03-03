@@ -6,8 +6,11 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(OpenCV REQUIRED)
 find_package(Boost COMPONENTS REQUIRED system filesystem iostreams)
 
+add_subdirectory(demo-support "${CMAKE_CURRENT_BINARY_DIR}/comp-viz-helpers")
+
 include_directories(${OpenCV_INCLUDE_DIRS})
-include_directories(${Boost_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories (demo-support/include)
 
 add_executable(ocv_test src/openCvTest.cpp)
 target_link_libraries(ocv_test ${OpenCV_LIBS})
@@ -15,14 +18,16 @@ target_link_libraries(ocv_test ${OpenCV_LIBS})
 add_executable(inria_demo src/inriaHeadPose.cpp)
 target_link_libraries(inria_demo ${OpenCV_LIBS})
 
-add_executable(cmu_demo src/cmuFaces.cpp src/SimpleFaceDetector.cpp src/SimpleFaceDetector.h)
+add_executable(cmu_demo src/cmuFaces.cpp)
 target_link_libraries(cmu_demo ${OpenCV_LIBS})
+target_link_libraries (cmu_demo demo-support)
 
-add_executable(ncku_demo src/nckuSet.cpp src/SimpleFaceDetector.cpp src/SimpleFaceDetector.h)
+add_executable(ncku_demo src/nckuSet.cpp)
 target_link_libraries(ncku_demo ${OpenCV_LIBS})
+target_link_libraries (ncku_demo demo-support)
 
-add_executable(feret_demo src/feretDb.cpp src/SimpleFaceDetector.cpp src/SimpleFaceDetector.h)
-target_link_libraries(feret_demo ${OpenCV_LIBS};${Boost_LIBRARIES})
+add_executable(feret_demo src/feretDb.cpp)
+target_link_libraries(feret_demo ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 
 # http://stackoverflow.com/questions/13429656

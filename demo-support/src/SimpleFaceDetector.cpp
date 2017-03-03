@@ -1,8 +1,14 @@
-#include "SimpleFaceDetector.h"
+#include <opencv2/opencv.hpp>
+
+#include "demo-support.h"
 
 SimpleFaceDetector::SimpleFaceDetector(const cv::CascadeClassifier &faceCascade,
                                        const cv::CascadeClassifier &eyesCascade)
         : faceCascade(faceCascade), eyesCascade(eyesCascade) {}
+
+SimpleFaceDetector::SimpleFaceDetector(const std::string &faceCascadePath, const std::string &eyesCascadePath)
+        : faceCascade(cv::String(faceCascadePath)), eyesCascade(cv::String(eyesCascadePath)) {}
+
 
 /**
  * Attempts to locate faces and eyes in an input image.
@@ -10,17 +16,12 @@ SimpleFaceDetector::SimpleFaceDetector(const cv::CascadeClassifier &faceCascade,
  * @return the input image with any face or eye detections marked by rectangles
  */
 cv::Mat SimpleFaceDetector::detectAndOverlay(const cv::Mat image) {
-    std::vector<cv::Rect> faces;
-    std::vector<cv::Rect> eyes;
-
     cv::Mat imageGrayscale(image);
     cv::cvtColor(image, imageGrayscale, CV_BGR2GRAY);
     cv::equalizeHist(imageGrayscale, imageGrayscale);
 
-    int eyeX;
-    int eyeY;
-
     // Detect and iterate over faces
+    std::vector<cv::Rect> faces;
     faceCascade.detectMultiScale(imageGrayscale, faces, 1.1, 2);
     for (cv::Rect face : faces) {
         cv::rectangle(
@@ -32,10 +33,11 @@ cv::Mat SimpleFaceDetector::detectAndOverlay(const cv::Mat image) {
         );
 
         // Detect and iterate over eyes
+        std::vector<cv::Rect> eyes;
         eyesCascade.detectMultiScale(imageGrayscale(face), eyes, 1.1, 2);
         for (cv::Rect eye : eyes) {
-            eyeX = face.x + eye.x;
-            eyeY = face.y + eye.y;
+            int eyeX = face.x + eye.x;
+            int eyeY = face.y + eye.y;
 
             cv::rectangle(
                 image,
