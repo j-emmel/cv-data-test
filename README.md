@@ -38,3 +38,16 @@ varies in 5&deg; increments from -90&deg;to +90&deg;.
 * [Webpage](https://www.nist.gov/itl/iad/image-group/color-feret-database)
 
 11338 total face images of 994 subjects at up to thirteen distinct poses.
+
+### Filter Script (WIP)
+
+#### Requirements
+
+* Ruby 
+* [Nokogiri](http://www.nokogiri.org/tutorials/installing_nokogiri.html)
+
+#### Usage
+
+```shell
+ruby scripts/feret_filter.rb feretPath
+```
