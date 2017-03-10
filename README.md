@@ -39,15 +39,7 @@ varies in 5&deg; increments from -90&deg;to +90&deg;.
 
 11338 total face images of 994 subjects at up to thirteen distinct poses.
 
-### Filter Script (WIP)
+### Filter Script
 
-#### Requirements
-
-* Ruby 
-* [Nokogiri](http://www.nokogiri.org/tutorials/installing_nokogiri.html)
-
-#### Usage
-
-```shell
-ruby scripts/feret_filter.rb feretPath
-```
+This script creates a CSV file with a list of Color FERET images that meet some critera. See [here](scripts/README.md) 
+for details.

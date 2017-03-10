@@ -134,8 +134,9 @@ def get_image_data_from_file(xml_file_path)
   ImageData.from_xml(recording.at_xpath('//Subject'), img_path)
 end
 
-def process_dvd(feret_path, dvd_num, filters)
-  feret_xml_path = "#{feret_path}/dvd#{dvd_num}/data/ground_truths/xml"
+def process_dvd(feret_path, dvd_num, filters, output_file)
+  feret_xml_rel = "dvd#{dvd_num}/data/ground_truths/xml"
+  feret_xml_path = "#{feret_path}/#{feret_xml_rel}"
 
   # Iterate over the directories for each subject
   Dir.foreach(feret_xml_path) do |subject_xml_dir|
@@ -145,7 +146,7 @@ def process_dvd(feret_path, dvd_num, filters)
     # Filter out this image subject based on demographic information
     feret_subject = get_demographics_from_file(feret_xml_path, subject_xml_dir)
     next unless filters.accept_subject?(feret_subject)
-    puts feret_subject
+    #puts feret_subject
 
     # Iterate over the files in a single subject's directory
     subject_xml_full_path = "#{feret_xml_path}/#{subject_xml_dir}"
@@ -153,12 +154,12 @@ def process_dvd(feret_path, dvd_num, filters)
       # Ignore non-XML files and the subject information file
       next if (File.extname(xml_file_name) != '.xml') || (File.basename(xml_file_name, '.xml') == subject_xml_dir)
 
-      xml_file_path = "#{subject_xml_full_path}/#{xml_file_name}"
-      feret_image_data = get_image_data_from_file(xml_file_path)
+      feret_image_data = get_image_data_from_file("#{subject_xml_full_path}/#{xml_file_name}")
       next unless filters.accept_image?(feret_image_data)
 
-      #TODO: record accepted image
-      puts feret_image_data
+      # Write (XML Path, Image Path) to output file
+      output_file.puts "#{feret_xml_rel}/#{subject_xml_dir}/#{xml_file_name},#{feret_image_data.path}"
+      #puts feret_image_data
     end
   end
 end
@@ -170,8 +171,15 @@ end
 
 # Process command line options to determine what data to filter out
 filters = SubjectFilters.new
+output_name = 'filtered_feret.csv'
 opts = OptionParser.new
 opts.banner = "Usage: #{$PROGRAM_NAME} feretPath [options]"
+
+
+opts.on('-d', '--dest PATH', String,
+        "Path to output file, overwritten with results (default: #{output_name})") do |destination|
+  output_name = destination
+end
 
 opts.on('-g', '--genders GENDERS', Array,
         'Comma-separated list of genders to include (Male Female)') do |genders|
@@ -179,7 +187,7 @@ opts.on('-g', '--genders GENDERS', Array,
 end
 
 opts.on('-p', '--poses POSES', Array,
-        'Comma-separated list of genders to include (fa fb pl hl ql pr hr qr ra rb rc rd re)') do |poses|
+        'Comma-separated list of poses to include (fa fb pl hl ql pr hr qr ra rb rc rd re)') do |poses|
   filters.poses = poses
 end
 
@@ -200,18 +208,20 @@ end
 opts.parse!(ARGV)
 
 # After parsing options, what's left should be the path to the Color FERET directory
-feret_path = ARGV.pop
-feret_path.chop! if feret_path[-1] == '/'
-
-unless feret_path
+if ARGV.empty?
   puts opts
   exit -1
 end
+
+feret_path = ARGV.pop
+feret_path.chop! if feret_path[-1] == '/'
 
 unless Dir.exist?(feret_path)
   puts "Error: Could not find directory #{feret_path}"
   exit -1
 end
 
-process_dvd(feret_path, 1, filters)
-#process_dvd(feret_path, 2)
+File.open(output_name, 'w') do |output_file|
+  process_dvd(feret_path, 1, filters, output_file)
+  process_dvd(feret_path, 2, filters, output_file)
+end
