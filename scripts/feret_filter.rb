@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+require 'optparse'
+
 require 'rubygems'
 require 'nokogiri'
 
@@ -166,22 +168,50 @@ end
 # Selection Script
 # ####
 
-if ARGV.size < 1
-  puts "Usage: #{$PROGRAM_NAME} feretPath"
-  puts '  feretPath: path to FERET directory'
-  exit -1
+# Process command line options to determine what data to filter out
+filters = SubjectFilters.new
+opts = OptionParser.new
+opts.banner = "Usage: #{$PROGRAM_NAME} feretPath [options]"
+
+opts.on('-g', '--genders GENDERS', Array,
+        'Comma-separated list of genders to include (Male Female)') do |genders|
+  filters.genders = genders
 end
 
-feret_path = ARGV[0].dup
+opts.on('-p', '--poses POSES', Array,
+        'Comma-separated list of genders to include (fa fb pl hl ql pr hr qr ra rb rc rd re)') do |poses|
+  filters.poses = poses
+end
+
+opts.on('-e', '--glasses INCLUDE', String,
+        'How images should be included based on glasses (any, yes, no)') do |include|
+  filters.glasses = include
+end
+
+opts.on('-b', '--beard INCLUDE', String,
+        'How images should be included based on beard (any, yes, no)') do |include|
+  filters.beard = include
+end
+
+opts.on('-m', '--mustache INCLUDE', String,
+        'How images should be included based on glasses (any, yes, no)') do |include|
+  filters.mustache = include
+end
+opts.parse!(ARGV)
+
+# After parsing options, what's left should be the path to the Color FERET directory
+feret_path = ARGV.pop
 feret_path.chop! if feret_path[-1] == '/'
+
+unless feret_path
+  puts opts
+  exit -1
+end
 
 unless Dir.exist?(feret_path)
   puts "Error: Could not find directory #{feret_path}"
   exit -1
 end
-
-filters = SubjectFilters.new
-#TODO: configure filters
 
 process_dvd(feret_path, 1, filters)
 #process_dvd(feret_path, 2)
